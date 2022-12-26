@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--build.xml中的第一句話，沒有實際的意義-->
+<!--Ant的所有內容必須包含在<project></project>裏面，name是你給它取的名字，basedir指工作的根目錄，.代表當前目錄，default代表默認要做的事情。-->
+<project name="HelloWorld" default="run" basedir=".">
+    <!--<property />設置變量-->
+    <property name="src" value="src"/>
+    <property name="dest" value="classes"/>
+    <property name="hello_jar" value="hello1.jar"/>
+    <!--每個target代表你想做的操作，給這個操作命名，及name值，depends是它所依賴的target在執行這個target，例如這裏的compile之前ant會先檢查init是否曾經被執行過，如果執行
+        過則直接直接執行compile，如果沒有則會先執行它依賴的target例如這裏的init，然後在執行這個target-->
+    <!--新建文件夾-->
+    <target name="init">
+        <mkdir dir="${dest}"/>
+    </target>
+    <!--開始編輯-->
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${dest}"/>
+    </target>
+    <!--創建jar包-->
+    <target name="build" depends="compile">
+        <jar jarfile="${hello_jar}" basedir="${dest}"/>
+    </target>
+    <!--開始運行-->
+    <target name="run" depends="build">
+        <java classname="com.company.Main" classpath="${hello_jar}"/>
+    </target>
+    <!--刪除生成的文件-->
+    <target name="clean" depends="run">
+        <delete dir="${dest}"/>
+        <delete file="${hello_jar}"/>
+    </target>
+    <target name="rerun" depends="clean,run">
+        <ant target="clean" />
+        <ant target="run" />
+    </target>
+
+</project>
